@@ -115,7 +115,7 @@ class Transcriber(nn.Module):
 
 
 class Transcriber_RNN(nn.Module):
-    def __init__(self, 256):
+    def __init__(self):
         super().__init__()
 
         self.melspectrogram = LogMelSpectrogram()
