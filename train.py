@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 from torchsummary import summary
 
-from model import Transciber
+from model import Transcriber
 from dataset import MAESTRO_small, allocate_batch
 from evaluate import evaluate
 from constants import HOP_SIZE
@@ -47,7 +47,7 @@ def train(logdir, batch_size, iterations, validation_interval, sequence_length, 
 
     device = th.device('cuda') if th.cuda.is_available() else th.device('cpu')
 
-    model = Transciber(cnn_unit=cnn_unit, fc_unit=fc_unit)
+    model = Transcriber(cnn_unit=cnn_unit, fc_unit=fc_unit)
     optimizer = th.optim.Adam(model.parameters(), learning_rate, weight_decay=weight_decay)
     scheduler = StepLR(optimizer, step_size=1000, gamma=0.98)
     criterion = nn.BCEWithLogitsLoss()
@@ -90,7 +90,7 @@ def train(logdir, batch_size, iterations, validation_interval, sequence_length, 
                     print(f'{key:27} : {np.mean(value):.4f}')
             model.train()
 
-    th.save({'model_state_dict': model.state_dict,
+    th.({'model_state_dict': model.state_dict,
             'optimizer_state_dict': optimizer.state_dict(),
             'step' : step,
             'cnn_unit' : cnn_unit,
