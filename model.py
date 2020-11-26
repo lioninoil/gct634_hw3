@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchaudio.transforms as transforms
 
+from torchsummary import summary
 from constants import SAMPLE_RATE, N_MELS, N_FFT, F_MAX, F_MIN, HOP_SIZE
 
 
