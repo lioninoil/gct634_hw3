@@ -28,7 +28,7 @@ class LogMelSpectrogram(nn.Module):
 
 
 class LSTMs(nn.Module):
-    def __init__(self, n_mels=N_MELS, hidden_size=1024, output_size=512, num_layers=2, bidirectional=True):
+    def __init__(self, n_mels=N_MELS, hidden_size=1024, output_size=88, num_layers=2, bidirectional=True):
         super().__init__()
         self.n_mels, self.hidden_size, self.output_size = n_mels, hidden_size, output_size
         self.num_layers = num_layers
@@ -40,7 +40,7 @@ class LSTMs(nn.Module):
                             bidirectional=bidirectional,
                             batch_first=True)
         self.output_fc = nn.Linear(self.hidden_size * self.num_directions, output_size)
-        self.sig = nn.Sigmoid()
+#        self.sig = nn.Sigmoid()
 
     def forward(self, x):
         self.batch_size = x.size(0)
@@ -48,8 +48,9 @@ class LSTMs(nn.Module):
         c0 = self.init_hidden()
 
         output, hidden = self.lstm(x, (h0, c0))
-        output = self.output_fc(output[:, -1, :])
-        output = self.sig(output)
+        # output.shape(batch_size, seq_len, hidden_size * direction)
+        output = self.output_fc(output[:, :, -1]), output_size)
+#        output = self.sig(output)
         return output
 
     def init_hidden(self):
