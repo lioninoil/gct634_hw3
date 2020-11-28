@@ -28,7 +28,7 @@ class LogMelSpectrogram(nn.Module):
 
 
 class LSTMs(nn.Module):
-    def __init__(self, n_mels=N_MELS, hidden_size=229, output_size=88, num_layers=2, bidirectional=True):
+    def __init__(self, n_mels=N_MELS, hidden_size=229, output_size=88, num_layers=2):
         super().__init__()
         self.n_mels, self.hidden_size, self.output_size = n_mels, hidden_size, output_size
         self.num_layers = num_layers
@@ -37,7 +37,7 @@ class LSTMs(nn.Module):
         self.lstm = nn.LSTM(input_size=self.n_mels,
                             hidden_size=self.hidden_size,
                             num_layers=self.num_layers,
-                            bidirectional=bidirectional,
+                            bidirectional=True,
                             batch_first=True)
 
     def forward(self, x):
@@ -76,20 +76,28 @@ class Transcriber(nn.Module):
 
 
 class Transcriber_RNN(nn.Module):
-    def __init__(self):
+    def __init__(self, input_size, output_size, hidden_size, n_layers):
         super().__init__()
-
+        self.input_size = input_size
+        self.output_size = output_size
+        self.hidden_size = hidden_size
+        self.n_layers = n_layers
+        
         self.melspectrogram = LogMelSpectrogram()
 
-        self.frame_LSTM = LSTMs()
-
-        self.onset_LSTM = LSTMs()
+        self.frame_LSTM = LSTMs(input_size, output_size, hidden_size, n_layers)
+        self.frame_fc = nn.Linear(output_size, 88)
+        
+        self.onset_LSTM = LSTMs(input_size, output_size, hidden_size, n_layers)
+        self.onset_fc = nn.Linear(output_size, 88)
 
     def forward(self, audio):
         mel = self.melspectrogram(audio)
-
-        frame_out = self.frame_LSTM(mel)
         
-        onset_out = self.onset_LSTM(mel)
+        x = self.frame_LSTM(mel)
+        frame_out = self.frame_fc(x)
+        
+        x = self.onset_LSTM(mel)
+        onset_out = self.onset_fc(x)
         
         return frame_out, onset_out
