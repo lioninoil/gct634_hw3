@@ -28,7 +28,7 @@ class LogMelSpectrogram(nn.Module):
 
 
 class LSTMs(nn.Module):
-    def __init__(self, n_mels=N_MELS, hidden_size=512, output_size=256, num_layers=2, bidirectional=True):
+    def __init__(self, n_mels=N_MELS, hidden_size=32768, output_size=17600, num_layers=2, bidirectional=True):
         super().__init__()
         self.n_mels, self.hidden_size, self.output_size = n_mels, hidden_size, output_size
         self.num_layers = num_layers
@@ -47,7 +47,7 @@ class LSTMs(nn.Module):
         h0 = self.init_hidden()
         c0 = self.init_hidden()
 
-        output, hidden = self.lstm(x, (h0, c0) )
+        output, hidden = self.lstm(x, (h0, c0))
         output = self.output_fc(output[:, -1, :])
         output = self.sig(output)
         return output
@@ -86,17 +86,19 @@ class Transcriber_RNN(nn.Module):
         self.melspectrogram = LogMelSpectrogram()
 
         self.frame_LSTM = LSTMs()  # Parameters for LSTM are defined as default.
-        self.frame_fc = nn.Linear(256, 88)
+#        self.frame_fc = nn.Linear(256, 200*88)
+        self.frame_fc = self.frame_LSTM.view(200, 88)
 
         self.onset_LSTM = LSTMs()
-        self.onset_fc = nn.Linear(256, 88)
+#        self.onset_fc = nn.Linear(256, 200*88)
+        self.onset_fc = self.onset_LSTM.view(200, 88)
 
     def forward(self, audio):
         mel = self.melspectrogram(audio)
 
         x = self.frame_LSTM(mel)
         frame_out = self.frame_fc(x)
-
+        
         x = self.onset_LSTM(mel)
         onset_out = self.onset_fc(x)
         return frame_out, onset_out
