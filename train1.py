@@ -47,14 +47,14 @@ def train(logdir, batch_size, iterations, validation_interval, sequence_length, 
 
     device = th.device('cuda') if th.cuda.is_available() else th.device('cpu')
 
-    model = Transcriber_RNN()
+    model = Transcriber_RNN(input_size=229, output_size=88, hidden_size=229, n_layers=2)
+
     optimizer = th.optim.Adam(model.parameters(), learning_rate, weight_decay=weight_decay)
     scheduler = StepLR(optimizer, step_size=1000, gamma=0.98)
     criterion = nn.BCEWithLogitsLoss()
 
     model = model.to(device)
-    # see summary
-    # summary(model, (5411840))
+
     loop = tqdm(range(1, iterations+1))
     
     for step, batch in zip(loop, cycle(loader)):
