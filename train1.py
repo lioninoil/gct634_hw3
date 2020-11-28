@@ -12,7 +12,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 from torchsummary import summary
 
-from model import Transcriber_RNN
+from model1 import Transcriber_RNN
 from dataset import MAESTRO_small, allocate_batch
 from evaluate import evaluate
 from constants import HOP_SIZE
@@ -54,7 +54,7 @@ def train(logdir, batch_size, iterations, validation_interval, sequence_length, 
 
     model = model.to(device)
     # see summary
-    summary(model, (5411840))
+    # summary(model, (5411840))
     loop = tqdm(range(1, iterations+1))
     
     for step, batch in zip(loop, cycle(loader)):

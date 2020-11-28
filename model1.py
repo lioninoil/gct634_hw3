@@ -45,8 +45,9 @@ class LSTMs(nn.Module):
     def forward(self, x):
         self.batch_size = x.size(0)
         h0 = self.init_hidden()
+        c0 = self.init_hidden()
 
-        output, hidden = self.lstm(x, h0)
+        output, hidden = self.lstm(x, (h0, c0) )
         output = self.output_fc(output[:, -1, :])
         output = self.sig(output)
         return output
