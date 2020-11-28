@@ -49,7 +49,7 @@ class LSTMs(nn.Module):
 
         output, hidden = self.lstm(x, (h0, c0))
         # output.shape(batch_size, seq_len, hidden_size * direction)
-        output = self.output_fc(output[:, :, -1])
+#        output = self.output_fc(output[:, :, -1])
 #        output = self.sig(output)
         return output
 
