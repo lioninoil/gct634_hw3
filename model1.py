@@ -28,7 +28,7 @@ class LogMelSpectrogram(nn.Module):
 
 
 class LSTMs(nn.Module):
-    def __init__(self, n_mels=N_MELS, hidden_size=1024, output_size=88, num_layers=2, bidirectional=True):
+    def __init__(self, n_mels=N_MELS, hidden_size=229, output_size=88, num_layers=2, bidirectional=True):
         super().__init__()
         self.n_mels, self.hidden_size, self.output_size = n_mels, hidden_size, output_size
         self.num_layers = num_layers
